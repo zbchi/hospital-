@@ -10,15 +10,22 @@ int main()
         switch (ch)
         {
         case '1':
+            clear();
+            Register();
             break;
 
         case '2':
+            clear();
+            int count = 0;
+            load_doctor(&count);
             break;
         case '3':
+            clear();
             print();
             break;
         case '4':
-            add();
+            clear();
+            adddel();
             break;
         case '5':
             break;
@@ -26,6 +33,7 @@ int main()
             return 0;
 
         default:
+            clear();
             break;
         }
     }

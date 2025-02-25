@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/zb/system",
-      "program": "/home/zb/system/out",
+      "cwd": "/home/zb/hospital",
+      "program": "/home/zb/hospital/out",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

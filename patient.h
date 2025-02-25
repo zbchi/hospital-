@@ -1,13 +1,15 @@
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
 struct patient
 {
     char name[64];
     int id;
 };
+void clear1();
 void add_patient(FILE *fp, char *name, int id);
 void del_patient();
 void print_patient();
-void pos_patient_byid(int patient_id);
-void pos_patient_byname(char patient_name);
-void del_patient_byid(FILE *fp, int id);
-void del_patient_byname(FILE *fp, char *name);
+void del_patient_bynameid(char *name, int id);
+struct patient *load_patient(int *count);
