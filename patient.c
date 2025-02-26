@@ -49,7 +49,7 @@ void del_patient()
         }
     }
 }
-void print_patient();
+
 void del_patient_bynameid(char *name, int id)
 {
     FILE *fp = fopen("patient.txt", "r");

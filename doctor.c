@@ -44,7 +44,7 @@ void del_doctor()
             return;
         default:
             printf("数字无效，请重新输入");
-            clear1();
+            clear();
         }
     }
 }
@@ -96,7 +96,7 @@ struct doctor *load_doctor(int *count)
     int size = 64;
     struct doctor *doctor = (struct doctor *)malloc(sizeof(struct doctor) * 64);
     struct doctor tmp;
-    while (fscanf(fp, "%63s %d %63s", tmp.name, &tmp.id, tmp.dept) == 3)
+    while (fscanf(fp, "%63s %d %63s\n", tmp.name, &tmp.id, tmp.dept) == 3)
     {
         // printf("%s %d %s\n", tmp.name, tmp.id, tmp.dept);
         if (*count > size)

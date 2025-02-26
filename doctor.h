@@ -12,7 +12,7 @@ struct doctor
 void clear();
 void add_doctor(FILE *fp, char *name, int id, char *dept);
 void del_doctor();
-void print_doctor(struct doctor *doctor);
+
 void doctor_patients(int doctor_id);
 void del_doctor_bynameid(char *name, int id);
 

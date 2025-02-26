@@ -10,6 +10,6 @@ struct patient
 void clear1();
 void add_patient(FILE *fp, char *name, int id);
 void del_patient();
-void print_patient();
+
 void del_patient_bynameid(char *name, int id);
 struct patient *load_patient(int *count);

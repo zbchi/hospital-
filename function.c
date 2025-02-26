@@ -1,4 +1,54 @@
 #include "function.h"
+void any_continue()
+{
+    clear();
+    printf("按任回车以继续:");
+    getchar();
+}
+
+void get_date(char *date)
+{
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    strftime(date, 20, "%Y-%m-%d", tm);
+}
+
+struct registration *load_registration(int *count)
+{
+    *count = 0;
+    int size = 64;
+    FILE *fp = fopen("registration.txt", "r");
+    struct registration tmp;
+    struct registration *reg = (struct registration *)malloc(sizeof(struct registration) * 64);
+    while (fscanf(fp, "%d %d %s", &tmp.doctor_id, &tmp.patient_id, tmp.date) == 3)
+    {
+        if (*count > size)
+        {
+            size *= 2;
+            struct registration *new = realloc(reg, size * sizeof(struct registration));
+            reg = new;
+        }
+        reg[*count].doctor_id = tmp.doctor_id;
+        reg[*count].patient_id = tmp.patient_id;
+        strcpy(reg[*count].date, tmp.date);
+        (*count)++;
+    }
+    return reg;
+}
+
+void add_registration(int doctor_id, int patient_id, char *date)
+{
+    FILE *fp = fopen("registration.txt", "a");
+    int result = fprintf(fp, "%d  %d  %s\n", doctor_id, patient_id, date);
+    if (result < 0)
+        printf("挂号失败\n");
+
+    else
+        printf("挂号成功\n");
+
+    sleep(1);
+    fclose(fp);
+}
 void adddel()
 {
     while (1)
@@ -61,23 +111,19 @@ void print()
 {
     while (1)
     {
-        printf("\n1.打印全体医生信息\n2.打印全体患者信息\n0.返回上级\n");
+        printf("\n1.打印全体医生信息\n2.打印全体患者信息\n3.打印所有挂号记录\n0.返回上级\n");
         char ch;
         scanf(" %c", &ch);
         switch (ch)
         {
         case '1':
-            int count = 0;
-            struct doctor *doctors = load_doctor(&count);
-            for (int i = 0; i < count; i++)
-                printf("%-16s\t%8d\t%-16s\t\n", doctors[i].name, doctors[i].id, doctors[i].dept);
-            free(doctors);
+            print_doctors();
             break;
         case '2':
-            int count2;
-            struct patient *patients = load_patient(&count2);
-            for (int i = 0; i < count2; i++)
-                printf("%-16s\t%8d\t\n", patients[i].name, patients[i].id);
+            print_patients();
+            break;
+        case '3':
+            print_registration();
             break;
         case '0':
             return;
@@ -97,7 +143,7 @@ void Register()
     scanf("%s", p.name);
     printf("请输入患者ID:");
     scanf(" %d", &p.id);
-    FILE *fp = fopen("patient.txt", "w");
+    FILE *fp = fopen("patient.txt", "a");
     add_patient(fp, p.name, p.id);
     fclose(fp);
 
@@ -176,5 +222,132 @@ leep:
     r.patient_id = p.id;
     r.doctor_id = doctors[suoyin[whichdoctor]].id;
 
+    char date[12];
+    get_date(date);
+    add_registration(r.doctor_id, r.patient_id, date);
     free(doctors);
+}
+
+void print_registration()
+{
+    int count;
+    struct registration *reg = load_registration(&count);
+    for (int i = 0; i < count; i++)
+        printf("%8d\t%8d\t%-12s\t\n", reg[i].doctor_id, reg[i].patient_id, reg[i].date);
+    free(reg);
+
+    any_continue();
+}
+void print_doctors()
+{
+    int count = 0;
+    struct doctor *doctors = load_doctor(&count);
+    for (int i = 0; i < count; i++)
+        printf("%-16s\t%8d\t%-16s\t\n", doctors[i].name, doctors[i].id, doctors[i].dept);
+    free(doctors);
+    any_continue();
+}
+void print_patients()
+{
+    int count = 0;
+    struct patient *patients = load_patient(&count);
+    for (int i = 0; i < count; i++)
+        printf("%-16s\t%8d\t\n", patients[i].name, patients[i].id);
+    free(patients);
+    any_continue();
+}
+
+void unregister()
+{
+    printf("请输入患者ID:");
+    int id;
+
+    scanf(" %d", &id);
+
+    // printf("------------------------\n");
+    printf("\n输入需要退号的编号:\n");
+    int count = 0;
+    struct registration *reg = load_registration(&count);
+
+    // struct registration* unreg=(struct registration*)malloc(sizeof(struct registration));
+    // struct registration unreg[10];
+    int undoctor_id[10] = {0};
+    char date[10][12];
+    int undoctor_count = 0;
+
+    // printf("------------------------\n");
+
+    for (int i = 0; i < count; i++)
+    {
+        if (id == reg[i].patient_id)
+        {
+            undoctor_id[undoctor_count] = reg[i].doctor_id;
+            strcpy(date[undoctor_count], reg[i].date);
+            undoctor_count++;
+        }
+    }
+
+    // printf("%d", undoctor_id[0]);
+
+    count = 0;
+
+    struct doctor undoctor[10];
+    struct doctor *doctor = load_doctor(&count);
+
+    // printf("------------------------\n");
+
+    for (int i = 0; i < undoctor_count; i++)
+    {
+        for (int j = 0; j < count; j++)
+        {
+            if (undoctor_id[i] == doctor[j].id)
+            {
+                strcpy(undoctor[i].name, doctor[j].name);
+                strcpy(undoctor[i].dept, doctor[j].dept);
+                undoctor[i].id = doctor[j].id;
+            }
+        }
+    }
+
+    free(doctor);
+
+    for (int i = 0; i < undoctor_count; i++)
+    {
+        printf("%d.医生姓名:%-16s\t所属科室:%-16s\t医生ID:%8d\t日期:%-12s\t\n", i + 1, undoctor[i].name, undoctor[i].dept, undoctor[i].id, date[i]);
+    }
+
+    int which;
+    scanf("%d", &which);
+    which--;
+
+    struct registration unreg;
+    strcpy(unreg.date, date[which]);
+    unreg.doctor_id = undoctor[which].id;
+    unreg.patient_id = id;
+
+    del_registration(&unreg);
+
+    free(reg);
+}
+
+void del_registration(struct registration *unreg)
+{
+    // printf("%d %d %s", unreg->doctor_id, unreg->patient_id, unreg->date);
+    FILE *fp = fopen("registration.txt", "r");
+    FILE *tmp = fopen("tmp.txt", "w");
+    struct registration regtmp;
+    while (fscanf(fp, "%d %d %s", &regtmp.doctor_id, &regtmp.patient_id, regtmp.date) == 3)
+    {
+        if (unreg->doctor_id == regtmp.doctor_id && unreg->patient_id == regtmp.patient_id && strcmp(regtmp.date, unreg->date) == 0)
+            continue;
+
+        else
+            fprintf(tmp, "%d  %d  %s\n", regtmp.doctor_id, regtmp.patient_id, regtmp.date);
+    }
+    fclose(fp);
+    fclose(tmp);
+    remove("registration.txt");
+    rename("tmp.txt", "registration.txt");
+    printf("退号成功\n");
+    sleep(1);
 }

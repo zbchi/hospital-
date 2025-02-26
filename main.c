@@ -16,8 +16,7 @@ int main()
 
         case '2':
             clear();
-            int count = 0;
-            load_doctor(&count);
+            unregister();
             break;
         case '3':
             clear();
