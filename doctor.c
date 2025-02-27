@@ -10,6 +10,21 @@ void clear()
 }
 void add_doctor(FILE *fp, char *name, int id, char *dept)
 {
+    int count = 0;
+    struct doctor *d = load_doctor(&count);
+loop:
+    for (int i = 0; i < count; i++)
+    {
+        if (id == d[i].id)
+        {
+            printf("\nID重复,请重新输入ID:");
+            scanf(" %d", &id);
+            goto loop;
+        }
+    }
+
+    free(d);
+
     int result = fprintf(fp, "%s  %d  %s \n", name, id, dept);
     if (result < 0)
         printf("添加失败\n");
@@ -30,7 +45,7 @@ void del_doctor()
             printf("请输入医生姓名：");
             char name[64];
             scanf("%s", name);
-            del_doctor_bynameid(name, 0);
+            del_doctor_bynameid(name, -1);
             break;
 
         case '2':
@@ -57,7 +72,7 @@ void del_doctor_bynameid(char *name, int id)
     while (fscanf(fp, "%63s %d %63s", d.name, &d.id, d.dept) == 3)
     {
 
-        if (id == 0)
+        if (id == -1)
         {
             if (strcmp(name, d.name) == 0)
                 found = 1;

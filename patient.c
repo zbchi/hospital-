@@ -8,8 +8,26 @@ void clear1()
     }
 }
 
-void add_patient(FILE *fp, char *name, int id)
+void add_patient(FILE *fp, char *name, int id, const int isGuahao)
 {
+
+    int count = 0;
+    struct patient *p = load_patient(&count);
+loop:
+    for (int i = 0; i < count; i++)
+    {
+        if (p[i].id == id)
+        {
+            if (isGuahao)
+                return;
+            printf("\nID重复,请重新输入ID:");
+            scanf(" %d", &id);
+            goto loop;
+        }
+    }
+
+    free(p);
+
     int result = fprintf(fp, "%s  %d  \n", name, id);
     if (result < 0)
         printf("添加失败\n");
@@ -30,7 +48,7 @@ void del_patient()
             printf("请输入患者姓名：");
             char name[64];
             scanf("%s", name);
-            del_patient_bynameid(name, 0);
+            del_patient_bynameid(name, -1);
             break;
 
         case '2':
@@ -58,7 +76,7 @@ void del_patient_bynameid(char *name, int id)
     int found = 0;
     while (fscanf(fp, "%63s %d", p.name, &p.id) == 2)
     {
-        if (id == 0)
+        if (id == -1)
         {
             if (strcmp(name, p.name) == 0)
                 found = 1;

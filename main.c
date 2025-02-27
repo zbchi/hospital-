@@ -4,7 +4,7 @@ int main()
 {
     while (1)
     {
-        printf("\n请输入相应的数字：\n1.挂号\n2.退号\n3.打印\n4.添加删除\n5.统计\n0.退出\n");
+        printf("\n请输入相应的数字：\n1.挂号\n2.退号\n3.打印\n4.添加删除\n5.查询挂号记录\n0.退出\n");
         char ch;
         scanf(" %c", &ch);
         switch (ch)
@@ -27,6 +27,7 @@ int main()
             adddel();
             break;
         case '5':
+            patient_search();
             break;
         case '0':
             return 0;

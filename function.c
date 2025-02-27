@@ -2,7 +2,7 @@
 void any_continue()
 {
     clear();
-    printf("按任回车以继续:");
+    printf("按回车以继续:");
     getchar();
 }
 
@@ -53,7 +53,7 @@ void adddel()
 {
     while (1)
     {
-        printf("\n1.添加医生\n2.添加患者\n3.删除医生\n4.删除患者\n0.返回上级\n");
+        printf("\n1.添加医生\n2.添加患者\n3.移除医生\n4.移除患者\n0.返回上级\n");
         char ch;
         scanf(" %c", &ch);
         switch (ch)
@@ -84,7 +84,7 @@ void adddel()
             printf("输入患者ID：");
             int id2;
             scanf(" %d", &id2);
-            add_patient(fp2, name2, id2);
+            add_patient(fp2, name2, id2, 0);
             fclose(fp2);
 
             break;
@@ -100,7 +100,7 @@ void adddel()
         case '0':
             return;
         default:
-            printf("数字无效，请重新输入\n");
+            printf("\n数字无效,请重新输入\n");
             clear();
             continue;
         }
@@ -144,7 +144,7 @@ void Register()
     printf("请输入患者ID:");
     scanf(" %d", &p.id);
     FILE *fp = fopen("patient.txt", "a");
-    add_patient(fp, p.name, p.id);
+    add_patient(fp, p.name, p.id, 1);
     fclose(fp);
 
     int count = 0;
@@ -266,58 +266,29 @@ void unregister()
 
     // printf("------------------------\n");
     printf("\n输入需要退号的编号:\n");
-    int count = 0;
-    struct registration *reg = load_registration(&count);
 
     // struct registration* unreg=(struct registration*)malloc(sizeof(struct registration));
     // struct registration unreg[10];
+
+loop:
     int undoctor_id[10] = {0};
     char date[10][12];
     int undoctor_count = 0;
-
-    // printf("------------------------\n");
-
-    for (int i = 0; i < count; i++)
-    {
-        if (id == reg[i].patient_id)
-        {
-            undoctor_id[undoctor_count] = reg[i].doctor_id;
-            strcpy(date[undoctor_count], reg[i].date);
-            undoctor_count++;
-        }
-    }
-
-    // printf("%d", undoctor_id[0]);
-
-    count = 0;
-
     struct doctor undoctor[10];
-    struct doctor *doctor = load_doctor(&count);
 
-    // printf("------------------------\n");
+    print_reg_patient(id, undoctor_id, date, &undoctor_count, undoctor);
 
-    for (int i = 0; i < undoctor_count; i++)
+    if (undoctor_count == 0)
     {
-        for (int j = 0; j < count; j++)
-        {
-            if (undoctor_id[i] == doctor[j].id)
-            {
-                strcpy(undoctor[i].name, doctor[j].name);
-                strcpy(undoctor[i].dept, doctor[j].dept);
-                undoctor[i].id = doctor[j].id;
-            }
-        }
+        printf("\n你还没有挂号\n");
+        sleep(1);
+        return;
     }
-
-    free(doctor);
-
-    for (int i = 0; i < undoctor_count; i++)
-    {
-        printf("%d.医生姓名:%-16s\t所属科室:%-16s\t医生ID:%8d\t日期:%-12s\t\n", i + 1, undoctor[i].name, undoctor[i].dept, undoctor[i].id, date[i]);
-    }
-
     int which;
+
     scanf("%d", &which);
+    if (which < 1 || which > undoctor_count)
+        goto loop;
     which--;
 
     struct registration unreg;
@@ -326,8 +297,6 @@ void unregister()
     unreg.patient_id = id;
 
     del_registration(&unreg);
-
-    free(reg);
 }
 
 void del_registration(struct registration *unreg)
@@ -350,4 +319,74 @@ void del_registration(struct registration *unreg)
     rename("tmp.txt", "registration.txt");
     printf("退号成功\n");
     sleep(1);
+}
+
+void print_reg_patient(int id, int *undoctor_id, char (*date)[12], int *undoctor_count, struct doctor *undoctor)
+{
+    int count = 0;
+    struct registration *reg = load_registration(&count);
+    // printf("------------------------\n");
+
+    for (int i = 0; i < count; i++)
+    {
+        if (id == reg[i].patient_id)
+        {
+            undoctor_id[*undoctor_count] = reg[i].doctor_id;
+            strcpy(date[*undoctor_count], reg[i].date);
+            (*undoctor_count)++;
+        }
+    }
+
+    // printf("%d", undoctor_id[0]);
+
+    count = 0;
+    struct doctor *doctor = load_doctor(&count);
+    // printf("------------------------\n");
+
+    for (int i = 0; i < *undoctor_count; i++)
+    {
+        for (int j = 0; j < count; j++)
+        {
+            if (undoctor_id[i] == doctor[j].id)
+            {
+                strcpy(undoctor[i].name, doctor[j].name);
+                strcpy(undoctor[i].dept, doctor[j].dept);
+                undoctor[i].id = doctor[j].id;
+            }
+        }
+    }
+
+    free(doctor);
+    free(reg);
+
+    for (int i = 0; i < *undoctor_count; i++)
+    {
+        printf("%d.医生姓名:%-16s\t所属科室:%-16s\t医生ID:%8d\t日期:%-12s\t\n", i + 1, undoctor[i].name, undoctor[i].dept, undoctor[i].id, date[i]);
+    }
+}
+
+void patient_search()
+{
+
+    printf("请输入患者ID:");
+    int id;
+
+    scanf(" %d", &id);
+
+    printf("\n你的挂号记录:\n");
+
+    int undoctor_id[10] = {0};
+    char date[10][12];
+    int undoctor_count = 0;
+    struct doctor undoctor[10];
+
+    print_reg_patient(id, undoctor_id, date, &undoctor_count, undoctor);
+
+    if (undoctor_count == 0)
+    {
+        printf("\n你还没有挂号\n");
+        sleep(1);
+        return;
+    }
+    any_continue();
 }

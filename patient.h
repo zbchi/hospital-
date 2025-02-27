@@ -8,7 +8,7 @@ struct patient
     int id;
 };
 void clear1();
-void add_patient(FILE *fp, char *name, int id);
+void add_patient(FILE *fp, char *name, int id, const int isGuahao);
 void del_patient();
 
 void del_patient_bynameid(char *name, int id);
