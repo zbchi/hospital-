@@ -136,3 +136,50 @@ struct patient *load_patient(int *count)
     }*/
     return patient;
 }
+
+int compare_id_patient(const void *a, const void *b)
+{
+    struct patient *A = (struct patient *)a;
+    struct patient *B = (struct patient *)b;
+    if (A->id < B->id)
+        return -1;
+    if (A->id > B->id)
+        return 1;
+    return 0;
+}
+
+int compare_name_patient(const void *a, const void *b)
+{
+    struct patient *A = (struct patient *)a;
+    struct patient *B = (struct patient *)b;
+    return strcmp(A->name, B->name);
+}
+
+void sort_patient(char ch)
+{
+
+    int count = 0;
+    struct patient *p = load_patient(&count);
+    switch (ch)
+    {
+    case '1':
+        qsort(p, count, sizeof(struct patient), compare_id_patient);
+        break;
+    case '2':
+        qsort(p, count, sizeof(struct patient), compare_name_patient);
+        break;
+    }
+
+    FILE *tmp = fopen("tmp.txt", "w");
+    for (int i = 0; i < count; i++)
+
+        fprintf(tmp, "%s %d\n", p[i].name, p[i].id);
+
+    remove("patient.txt");
+    rename("tmp.txt", "patient.txt");
+
+    printf("排序成功\n");
+    sleep(1);
+
+    fclose(tmp);
+}

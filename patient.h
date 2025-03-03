@@ -13,3 +13,5 @@ void del_patient();
 
 void del_patient_bynameid(char *name, int id);
 struct patient *load_patient(int *count);
+
+void sort_patient(char ch);

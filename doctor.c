@@ -133,3 +133,61 @@ struct doctor *load_doctor(int *count)
     }*/
     return doctor;
 }
+
+int compare_id_doctor(const void *a, const void *b)
+{
+    struct doctor *A = (struct doctor *)a;
+    struct doctor *B = (struct doctor *)b;
+
+    if (A->id < B->id)
+        return -1;
+    if (A->id > B->id)
+        return 1;
+    return 0;
+}
+int compare_name_doctor(const void *a, const void *b)
+{
+    struct doctor *A = (struct doctor *)a;
+    struct doctor *B = (struct doctor *)b;
+    return strcmp(A->name, B->name);
+}
+
+int compare_dept_doctor(const void *a, const void *b)
+{
+    struct doctor *A = (struct doctor *)a;
+    struct doctor *B = (struct doctor *)b;
+    return strcmp(A->dept, B->dept);
+}
+
+void sort_doctor(char ch)
+{
+
+    int count = 0;
+    struct doctor *d = load_doctor(&count);
+    switch (ch)
+    {
+    case '1':
+        qsort(d, count, sizeof(struct doctor), compare_id_doctor);
+        break;
+    case '2':
+        qsort(d, count, sizeof(struct doctor), compare_name_doctor);
+        break;
+    case '3':
+        qsort(d, count, sizeof(struct doctor), compare_dept_doctor);
+        break;
+    }
+
+    FILE *tmp = fopen("tmp.txt", "w");
+    for (int i = 0; i < count; i++)
+
+        fprintf(tmp, "%s %d %s\n", d[i].name, d[i].id, d[i].dept);
+
+    remove("doctor.txt");
+    rename("tmp.txt", "doctor.txt");
+
+    printf("排序成功\n");
+
+    sleep(1);
+
+    fclose(tmp);
+}

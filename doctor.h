@@ -17,3 +17,5 @@ void doctor_patients(int doctor_id);
 void del_doctor_bynameid(char *name, int id);
 
 struct doctor *load_doctor(int *count);
+
+void sort_doctor(char ch);

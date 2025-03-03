@@ -136,8 +136,6 @@ void print()
 
 void Register()
 {
-    char name[64];
-    int id;
     struct patient p;
     printf("请输入患者姓名：");
     scanf("%s", p.name);
@@ -389,4 +387,59 @@ void patient_search()
         return;
     }
     any_continue();
+}
+
+void sort()
+{
+    while (1)
+    {
+        printf("\n1.排序医生\n2.排序患者\n0.返回上级\n");
+        char ch;
+        scanf(" %c", &ch);
+        switch (ch)
+        {
+        case '1':
+            while (1)
+            {
+                printf("\n1.通过ID排序医生\n2.通过姓名排序医生\n3.通过科室排序医生\n0.返回上级\n");
+                char cd;
+                scanf(" %c", &cd);
+                if (cd == '0')
+                    break;
+                if (cd != '1' && cd != '2' && cd != '3')
+                {
+                    printf("数字无效，请重新输入\n");
+                    continue;
+                }
+                sort_doctor(cd);
+                break;
+            }
+            break;
+        case '2':
+            // clear();
+            while (1)
+            {
+                printf("\n1.通过ID排序患者\n2.通过姓名排序患者\n0.返回上级\n");
+                char cp;
+                scanf(" %c", &cp);
+                if (cp == '0')
+                    break;
+                if (cp != '1' && cp != '2')
+                {
+                    printf("数字无效，请重新输入\n");
+                    continue;
+                }
+                sort_patient(cp);
+                break;
+            }
+            break;
+
+        case '0':
+            return;
+
+        default:
+            printf("数字无效，请重新输入\n");
+            continue;
+        }
+    }
 }
