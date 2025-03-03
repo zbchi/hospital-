@@ -188,6 +188,7 @@ void sort_doctor(char ch)
     printf("排序成功\n");
 
     sleep(1);
+    free(d);
 
     fclose(tmp);
 }

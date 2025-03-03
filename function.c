@@ -398,6 +398,7 @@ void sort()
         scanf(" %c", &ch);
         switch (ch)
         {
+            FILE *fp = fopen("patient.txt", "r");
         case '1':
             while (1)
             {
@@ -442,4 +443,42 @@ void sort()
             continue;
         }
     }
+}
+void doctor_search()
+{
+    printf("请输入医生ID:");
+    int id;
+    scanf(" %d", &id);
+    int count = 0;
+    struct doctor *d = load_doctor(&count);
+
+    int found = 0;
+    struct doctor tmp;
+    for (int i = 0; i < count; i++)
+    {
+        if (d[i].id == id)
+        {
+            printf("医生姓名:%-16s\t所属科室:%-16s\t医生ID:%8d\t\n", d[i].name, d[i].dept, d[i].id);
+            found = 1;
+        }
+    }
+    if (!found)
+    {
+        printf("未找到此医生\n");
+        sleep(1);
+        return;
+    }
+
+    free(d);
+
+    int num = 0;
+    struct registration *reg = load_registration(&count);
+    for (int i = 0; i < count; i++)
+    {
+        if (id == reg[i].doctor_id)
+            num++;
+    }
+    printf("总挂号数:%d\n", num);
+    free(reg);
+    any_continue();
 }

@@ -180,6 +180,6 @@ void sort_patient(char ch)
 
     printf("排序成功\n");
     sleep(1);
-
+    free(p);
     fclose(tmp);
 }

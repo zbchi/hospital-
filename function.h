@@ -23,3 +23,4 @@ void del_registration(struct registration *unreg);
 void print_reg_patient(int id, int *undoctor_id, char (*date)[12], int *undoctor_count, struct doctor *undoctor);
 void patient_search();
 void sort();
+void doctor_search();
