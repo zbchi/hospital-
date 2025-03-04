@@ -174,12 +174,11 @@ loop:
     int which;
     printf("0.返回上级\n");
     printf("请输入科室的编号:");
-    clear();
     scanf(" %d", &which);
     if (which < 0 || which > dept_count)
     {
+        clear();
         printf("无效的编号\n");
-        sleep(1);
         goto loop;
     }
     else if (which == 0)
@@ -201,7 +200,6 @@ leep:
     printf("0.返回上级\n\n");
     printf("请输入医生的编号:");
     int whichdoctor;
-    clear();
     scanf(" %d", &whichdoctor);
     if (whichdoctor == 0)
     {
@@ -211,8 +209,8 @@ leep:
     }
     if (whichdoctor < 0 || whichdoctor > nameCount)
     {
+        clear();
         printf("无效的编号\n");
-        sleep(1);
         goto leep;
     }
 
@@ -401,7 +399,6 @@ void sort()
         scanf(" %c", &ch);
         switch (ch)
         {
-            FILE *fp = fopen("patient.txt", "r");
         case '1':
             while (1)
             {
@@ -456,7 +453,7 @@ void doctor_search()
     struct doctor *d = load_doctor(&count);
 
     int found = 0;
-    struct doctor tmp;
+
     for (int i = 0; i < count; i++)
     {
         if (d[i].id == id)
