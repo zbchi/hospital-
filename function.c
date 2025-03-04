@@ -230,8 +230,9 @@ void print_registration()
 {
     int count;
     struct registration *reg = load_registration(&count);
+    printf("  医生ID    患者ID    日期\n");
     for (int i = 0; i < count; i++)
-        printf("%8d\t%8d\t%-12s\t\n", reg[i].doctor_id, reg[i].patient_id, reg[i].date);
+        printf("%8d  %8d  %-12s\n", reg[i].doctor_id, reg[i].patient_id, reg[i].date);
     free(reg);
 
     any_continue();
@@ -240,8 +241,9 @@ void print_doctors()
 {
     int count = 0;
     struct doctor *doctors = load_doctor(&count);
+    printf("医生姓名           医生ID   所属科室\n");
     for (int i = 0; i < count; i++)
-        printf("%-16s\t%8d\t%-16s\t\n", doctors[i].name, doctors[i].id, doctors[i].dept);
+        printf("%-16s %8d     %-16s\n", doctors[i].name, doctors[i].id, doctors[i].dept);
     free(doctors);
     any_continue();
 }
@@ -249,8 +251,9 @@ void print_patients()
 {
     int count = 0;
     struct patient *patients = load_patient(&count);
+    printf("患者姓名            患者ID\n");
     for (int i = 0; i < count; i++)
-        printf("%-16s\t%8d\t\n", patients[i].name, patients[i].id);
+        printf("%-16s  %8d\n", patients[i].name, patients[i].id);
     free(patients);
     any_continue();
 }
@@ -359,7 +362,7 @@ void print_reg_patient(int id, int *undoctor_id, char (*date)[12], int *undoctor
 
     for (int i = 0; i < *undoctor_count; i++)
     {
-        printf("%d.医生姓名:%-16s\t所属科室:%-16s\t医生ID:%8d\t日期:%-12s\t\n", i + 1, undoctor[i].name, undoctor[i].dept, undoctor[i].id, date[i]);
+        printf("%d.医生姓名:%-16s  所属科室:%-16s  医生ID:%8d  日期:%-12s\n", i + 1, undoctor[i].name, undoctor[i].dept, undoctor[i].id, date[i]);
     }
 }
 
@@ -478,7 +481,7 @@ void doctor_search()
         if (id == reg[i].doctor_id)
             num++;
     }
-    printf("总挂号数:%d\n", num);
+    printf("总挂号数:%d\n\n", num);
     free(reg);
     any_continue();
 }
